@@ -10,7 +10,8 @@ def interpret_command(command):
     # Menangani perintah yang sesuai
     if command == 'connect':
         drone.connect()
-        print("Drone connected.")
+        drone.calibrate()
+        print("Drone connected & calibrate.")
     elif command == 'calibrate':
         drone.calibrate()
         print("Drone calibrated.")
@@ -47,9 +48,6 @@ def interpret_command(command):
     elif command == 'rotate right':
         drone.rotate_right(30, 0.2)  # Putar kanan dengan kecepatan 30% selama 0.2 detik
         print("Drone rotating right...")
-    elif command == 'hover':
-        drone.hover(3)  # Hover selama 3 detik
-        print("Drone hovering...")
     elif command == 'disconnect':
         drone.disconnect()
         print("Drone disconnected.")

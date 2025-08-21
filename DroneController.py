@@ -135,10 +135,6 @@ class Drone:
         time.sleep(wait)
         self.turn = 128  # Reset rotation to neutral after wait time
 
-    def hover(self, wait=0):
-        self.stop()
-        time.sleep(wait)
-
     def move(self, direction, speed=50, wait=0):
         speed = self._convert_speed(speed)
         if direction == 'forward':

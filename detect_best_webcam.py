@@ -25,12 +25,12 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 @smart_inference_mode()
 def run(
-    weights=ROOT / "best (7).pt",  # model path
-    source="0",  # webcam source
+    weights=ROOT / "hand_sign.pt",  # model path
+    source="2",  # webcam source
     imgsz=(640, 640),  # inference size (height, width)
-    conf_thres=0.25,  # confidence threshold
+    conf_thres=0.75,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
-    max_det=10,  # maximum detections per image
+    max_det=1,  # maximum detections per image
     device="",  # cuda device, i.e. 0 or 0,1,2,3 or cpu
     line_thickness=3,  # bounding box thickness (pixels)
     hide_labels=False,  # hide labels
@@ -115,12 +115,12 @@ def run(
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "best (7).pt", help="model path")
-    parser.add_argument("--source", type=str, default="0", help="webcam source (default is 0)")
+    parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "Hand_sign.pt", help="model path")
+    parser.add_argument("--source", type=str, default="2", help="webcam source (default is 0)")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
     parser.add_argument("--conf-thres", type=float, default=0.50, help="confidence threshold")
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
-    parser.add_argument("--max-det", type=int, default=10, help="maximum detections per image")
+    parser.add_argument("--max-det", type=int, default=1, help="maximum detections per image")
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
     parser.add_argument("--line-thickness", default=3, type=int, help="bounding box thickness (pixels)")
     parser.add_argument("--hide-labels", default=False, action="store_true", help="hide labels")
