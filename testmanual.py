@@ -21,31 +21,31 @@ def interpret_command(command):
         drone.land(2)  # Land selama 2 detik
         print("Drone landing...")
     elif command == 'forward':
-        drone.move_forward(50, 1)  # Maju dengan kecepatan 50% selama 1 detik
+        drone.move_forward(30, 0.2)  # Maju dengan kecepatan 30% selama 0.2 detik
         print("Drone moving forward...")
     elif command == 'backward':
-        drone.move_backward(50, 1)  # Mundur dengan kecepatan 50% selama 1 detik
+        drone.move_backward(30, 0.2)  # Mundur dengan kecepatan 30% selama 0.2 detik
         print("Drone moving backward...")
     elif command == 'left':
-        drone.move_left(50, 1)  # Kiri dengan kecepatan 50% selama 1 detik
+        drone.move_left(30, 0.2)  # Kiri dengan kecepatan 30% selama 0.2 detik
         print("Drone moving left...")
     elif command == 'right':
-        drone.move_right(50, 0.2)  # Kanan dengan kecepatan 50% selama 1 detik
+        drone.move_right(30, 0.2)  # Kanan dengan kecepatan 30% selama 0.2 detik
         print("Drone moving right...")
     elif command == 'up':
-        drone.move_up(50, 1)  # Naik dengan kecepatan 50% selama 1 detik
+        drone.move_up(30, 0.2)  # Naik dengan kecepatan 30% selama 0.2 detik
         print("Drone moving up...")
     elif command == 'down':
-        drone.move_down(50, 1)  # Turun dengan kecepatan 50% selama 1 detik
+        drone.move_down(30, 0.2)  # Turun dengan kecepatan 30% selama 0.2 detik
         print("Drone moving down...")
     elif command == 'stop':
         drone.stop()
         print("Drone stopped.")
     elif command == 'rotate left':
-        drone.rotate_left(50, 1)  # Putar kiri dengan kecepatan 50% selama 1 detik
+        drone.rotate_left(30, 0.2)  # Putar kiri dengan kecepatan 30% selama 0.2 detik
         print("Drone rotating left...")
     elif command == 'rotate right':
-        drone.rotate_right(50, 1)  # Putar kanan dengan kecepatan 50% selama 1 detik
+        drone.rotate_right(30, 0.2)  # Putar kanan dengan kecepatan 30% selama 0.2 detik
         print("Drone rotating right...")
     elif command == 'hover':
         drone.hover(3)  # Hover selama 3 detik
