@@ -2,7 +2,7 @@ import argparse
 import os
 import platform
 import sys
-import time
+import time  # Tambahkan impor untuk penghitungan waktu
 from pathlib import Path
 import torch
 import cv2
@@ -16,6 +16,12 @@ from utils.general import (
 )
 from utils.plots import Annotator, colors
 from utils.torch_utils import select_device, smart_inference_mode
+from DroneController import Drone  # Impor kelas Drone dari file DroneController.py
+
+# Membuat instance drone
+drone = Drone()
+drone.connect()
+drone.calibrate()
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -23,32 +29,34 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-# Fungsi untuk memanggil perintah drone berdasarkan label yang terdeteksi
-def execute_drone_action(label):
-    # Mapping antara label dengan fungsi drone
-    actions = {
-        "takeoff": drone.take_off,
-        "land": drone.land,
-        "forward": drone.move_forward,
-        "backward": drone.move_backward,
-        "right": drone.move_right,
-        "left": drone.move_left,
-        "cw": drone.rotate_right,
-        "ccw": drone.rotate_left,
-        "up": drone.move_up,
-        "down": drone.move_down,
+# Fungsi untuk menerjemahkan label hasil deteksi model ke perintah penggerak drone
+def interpret_hand_gesture(label):
+    gesture_map = {
+        'takeoff': lambda: drone.take_off(2),
+        'land': lambda: drone.land(2),
+        'forward': lambda: drone.move_forward(30, 0.2),
+        'backward': lambda: drone.move_backward(30, 0.2),
+        'right': lambda: drone.move_right(30, 0.2),
+        'left': lambda: drone.move_left(30, 0.2),
+        'cw': lambda: drone.rotate_cw(30, 0.2),
+        'ccw': lambda: drone.rotate_ccw(30, 0.2),
+        'up': lambda: drone.move_up(30, 0.2),
+        'down': lambda: drone.move_down(30, 0.2),
+        'stop': lambda: drone.stop(),
+         # atau sesuai arah flip yang diinginkan
     }
 
-    if label in actions:
+    # Jika gesture terdeteksi dan ada di dalam peta
+    if label in gesture_map:
         print(f"Executing {label} command...")
-        actions[label](30, 0.2)  # Menjalankan fungsi dengan kecepatan 30% selama 0.2 detik
+        gesture_map[label]()  # Panggil fungsi yang sesuai untuk perintah tersebut
     else:
-        print(f"Unknown label: {label}")
+        print("Perintah tidak dikenali, coba lagi!")
 
 @smart_inference_mode()
 def run(
     weights=ROOT / "hand_sign.pt",  # model path
-    source="2",  # webcam source
+    source="0",  # webcam source
     imgsz=(640, 640),  # inference size (height, width)
     conf_thres=0.75,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
@@ -65,7 +73,7 @@ def run(
 
     # Pilih device
     device = select_device(device)
-
+    
     # Patch: Ganti PosixPath ke WindowsPath jika dijalankan di Windows
     if platform.system() == "Windows":
         import pathlib
@@ -119,8 +127,8 @@ def run(
                     label = None if hide_labels else (names[c] if hide_conf else f"{names[c]} {conf:.2f}")
                     annotator.box_label(xyxy, label, color=colors(c, True))
 
-                    # Eksekusi perintah drone berdasarkan label
-                    execute_drone_action(names[c])
+                    # Eksekusi perintah drone berdasarkan label yang terdeteksi
+                    interpret_hand_gesture(names[c])  # Menjalankan perintah berdasarkan label yang terdeteksi
 
             # Tampilkan hasil deteksi
             im0 = annotator.result()
@@ -135,20 +143,13 @@ def run(
             if cv2.waitKey(1) == ord("q"):  # tekan 'q' untuk keluar
                 break
 
-        # Menjalankan kontrol manual dari terminal di sini
-        user_input = input("Masukkan perintah manual (misal: forward, takeoff, land, stop, etc.): ")
-        if user_input == 'exit':
-            print("Keluar dari kontrol drone.")
-            break
-        execute_drone_action(user_input)
-
     cap.release()
     cv2.destroyAllWindows()
 
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "Hand_sign.pt", help="model path")
-    parser.add_argument("--source", type=str, default="2", help="webcam source (default is 0)")
+    parser.add_argument("--source", type=str, default="0", help="webcam source (default is 0)")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
     parser.add_argument("--conf-thres", type=float, default=0.50, help="confidence threshold")
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")

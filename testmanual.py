@@ -21,6 +21,18 @@ def interpret_command(command):
     elif command == 'land':
         drone.land(2)  # Land selama 2 detik
         print("Drone landing...")
+    elif command == 'flip':
+        drone.flip("right")  # Menambahkan perintah flip ke kanan (default)
+        print("Drone flipping to the right...")
+    elif command == 'flip right':
+        drone.flip("right")  # Flip ke kanan
+        print("Drone flipping to the right...")
+    elif command == 'flip left':
+        drone.flip("left")  # Flip ke kiri
+        print("Drone flipping to the left...")
+    elif command == 'stop':
+        drone.stop()
+        print("Drone stopped.")
     elif command == 'forward':
         drone.move_forward(30, 0.2)  # Maju dengan kecepatan 30% selama 0.2 detik
         print("Drone moving forward...")
@@ -39,14 +51,11 @@ def interpret_command(command):
     elif command == 'down':
         drone.move_down(30, 0.2)  # Turun dengan kecepatan 30% selama 0.2 detik
         print("Drone moving down...")
-    elif command == 'stop':
-        drone.stop()
-        print("Drone stopped.")
-    elif command == 'rotate left':
-        drone.rotate_left(30, 0.2)  # Putar kiri dengan kecepatan 30% selama 0.2 detik
+    elif command == 'ccw':
+        drone.rotate_ccw(80, 0.5)  # Putar kiri dengan kecepatan 30% selama 0.2 detik
         print("Drone rotating left...")
-    elif command == 'rotate right':
-        drone.rotate_right(30, 0.2)  # Putar kanan dengan kecepatan 30% selama 0.2 detik
+    elif command == 'cw':
+        drone.rotate_cw(80, 0.5)  # Putar kanan dengan kecepatan 30% selama 0.2 detik
         print("Drone rotating right...")
     elif command == 'disconnect':
         drone.disconnect()

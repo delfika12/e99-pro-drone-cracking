@@ -6,8 +6,9 @@ import cv2
 
 COMMAND_TAKE_OFF = 0x01
 COMMAND_LAND = 0x02
-COMMAND_CALIBRATE_GYRO = 0x80
+COMMAND_FLIP = 0x08  # Menambahkan perintah flip
 COMMAND_UNLOCK_MOTOR = 0x40
+COMMAND_CALIBRATE_GYRO = 0x80
 
 def debug(msg):
     if os.getenv('DRONELIB_DEBUG'):
@@ -50,12 +51,12 @@ class Drone:
                 self.throttle,
                 self.turn,
                 0,
-                self.left_right ^ self.forward_backward ^ self.throttle ^ self.turn
+                self.left_right ^ self.forward_backward ^ self.throttle ^ self.turn  # Checksum
             ])
         else:
             message.extend([0x80, 0x80, 0x80, 0x80, self.current_command, self.current_command])
 
-        message.append(0x99)
+        message.append(0x99)  # Footer
         return bytearray(message)
 
     # Send the built message periodically
@@ -92,6 +93,19 @@ class Drone:
         self._send_command(COMMAND_UNLOCK_MOTOR)
         time.sleep(2) # artificial delay
 
+    def flip(self, direction="right"):
+        # Mengirimkan perintah flip ke drone dan arah flip
+        if direction == "right":
+            # Arah flip kanan (>128)
+            self.left_right = 200  # Nilai lebih besar dari 128 untuk flip ke kanan
+        elif direction == "left":
+            # Arah flip kiri (<128)
+            self.left_right = 50  # Nilai lebih kecil dari 128 untuk flip ke kiri
+
+        # Mengirimkan perintah flip
+        self._send_command(COMMAND_FLIP)
+        time.sleep(2)  # delay untuk menunggu flip selesai
+
     # Converts a normalized speed (0 to 100) to the control range (128 to 254)
     def _convert_speed(self, speed):
         return int(128 + (speed / 100) * (254 - 128))
@@ -114,11 +128,11 @@ class Drone:
     def move_down(self, speed=50, wait=0):
         self.move('down', speed, wait)
 
-    def rotate_left(self, speed=50, wait=0):
-        self.rotate('left', speed, wait)
+    def rotate_ccw(self, speed=50, wait=0):
+        self.rotate('ccw', speed, wait)
 
-    def rotate_right(self, speed=50, wait=0):
-        self.rotate('right', speed, wait)
+    def rotate_cw(self, speed=50, wait=0):
+        self.rotate('cw', speed, wait)
 
     def stop(self):
         self.forward_backward = 128
@@ -128,9 +142,9 @@ class Drone:
 
     def rotate(self, direction, speed=50, wait=0):
         speed = self._convert_speed(speed)
-        if direction == 'left':
+        if direction == 'ccw':
             self.turn = 256 - speed
-        elif direction == 'right':
+        elif direction == 'cw':
             self.turn = speed
         time.sleep(wait)
         self.turn = 128  # Reset rotation to neutral after wait time
@@ -149,6 +163,10 @@ class Drone:
             self.throttle = speed
         elif direction == 'down':
             self.throttle = 256 - speed
+        elif direction == 'cw':
+            self.turn = speed
+        elif direction == 'ccw':
+            self.turn = 256 - speed
 
         time.sleep(wait)
         self.forward_backward = 128  # Reset forward/backward to neutral

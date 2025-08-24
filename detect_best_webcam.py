@@ -26,7 +26,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 @smart_inference_mode()
 def run(
     weights=ROOT / "hand_sign.pt",  # model path
-    source="2",  # webcam source
+    source="0",  # webcam sourcex
     imgsz=(640, 640),  # inference size (height, width)
     conf_thres=0.75,  # confidence threshold
     iou_thres=0.45,  # NMS IOU threshold
@@ -116,7 +116,7 @@ def run(
 def parse_opt():
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", nargs="+", type=str, default=ROOT / "Hand_sign.pt", help="model path")
-    parser.add_argument("--source", type=str, default="2", help="webcam source (default is 0)")
+    parser.add_argument("--source", type=str, default="0", help="webcam source (default is 0)")
     parser.add_argument("--imgsz", "--img", "--img-size", nargs="+", type=int, default=[640], help="inference size h,w")
     parser.add_argument("--conf-thres", type=float, default=0.50, help="confidence threshold")
     parser.add_argument("--iou-thres", type=float, default=0.45, help="NMS IoU threshold")
