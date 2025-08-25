@@ -25,7 +25,7 @@ ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
 @smart_inference_mode()
 def run(
-    weights=ROOT / "hand_sign.pt",  # model path
+    weights=ROOT / "Hand_sign.pt",  # model path
     source="0",  # webcam sourcex
     imgsz=(640, 640),  # inference size (height, width)
     conf_thres=0.75,  # confidence threshold

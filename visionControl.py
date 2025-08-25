@@ -34,14 +34,12 @@ def interpret_hand_gesture(label):
     gesture_map = {
         'takeoff': lambda: drone.take_off(2),
         'land': lambda: drone.land(2),
-        'forward': lambda: drone.move_forward(30, 0.2),
-        'backward': lambda: drone.move_backward(30, 0.2),
-        'right': lambda: drone.move_right(30, 0.2),
-        'left': lambda: drone.move_left(30, 0.2),
-        'cw': lambda: drone.rotate_cw(30, 0.2),
-        'ccw': lambda: drone.rotate_ccw(30, 0.2),
-        'up': lambda: drone.move_up(30, 0.2),
-        'down': lambda: drone.move_down(30, 0.2),
+        'forward': lambda: drone.move_forward(50, 0.01),
+        'backward': lambda: drone.move_backward(50, 0.01),
+        'cw': lambda: drone.move_right(50, 0.01),
+        'ccw': lambda: drone.move_left(50, 0.01),
+        'up': lambda: drone.move_up(50, 0.05),
+        'down': lambda: drone.move_down(100, 0.08),
         'stop': lambda: drone.stop(),
          # atau sesuai arah flip yang diinginkan
     }
@@ -156,7 +154,7 @@ def parse_opt():
     parser.add_argument("--max-det", type=int, default=1, help="maximum detections per image")
     parser.add_argument("--device", default="", help="cuda device, i.e. 0 or 0,1,2,3 or cpu")
     parser.add_argument("--line-thickness", default=3, type=int, help="bounding box thickness (pixels)")
-    parser.add_argument("--hide-labels", default=False, action="store_true", help="hide labels")
+    parser.add_argument("--hide-labels", default=True, action="store_true", help="hide labels")
     parser.add_argument("--hide-conf", default=False, action="store_true", help="hide confidences")
     parser.add_argument("--half", action="store_true", help="use FP16 half-precision inference")
     opt = parser.parse_args()
